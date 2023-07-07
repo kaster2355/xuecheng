@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>xuecheng-content</artifactId>
+        <groupId>com.kaster</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>xuecheng-content-model</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>xuecheng-content-model</name>
+    <description>xuecheng-content-model</description>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.kaster</groupId>
+            <artifactId>xuecheng-base</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+
+
+</project>
