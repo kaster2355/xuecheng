@@ -78,7 +78,7 @@ public class ContentCodeGenerator {
 		// 包配置
 		PackageConfig pc = new PackageConfig();
 		pc.setModuleName(SERVICE_NAME);
-		pc.setParent("com.xuecheng");
+		pc.setParent("com.kaster.xuecheng");
 
 		pc.setServiceImpl("service.impl");
 		pc.setXml("mapper");
