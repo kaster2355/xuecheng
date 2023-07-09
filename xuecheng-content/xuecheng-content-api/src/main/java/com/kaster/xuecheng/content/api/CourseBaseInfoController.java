@@ -1,5 +1,7 @@
 package com.kaster.xuecheng.content.api;
 
+import com.kaster.xuecheng.content.model.dto.AddCourseDto;
+import com.kaster.xuecheng.content.model.dto.CourseBaseInfoDto;
 import com.kaster.xuecheng.content.model.dto.QueryCourseParamsDto;
 import com.kaster.xuecheng.content.model.po.CourseBase;
 import com.kaster.xuecheng.base.model.PageParams;
@@ -25,5 +27,12 @@ public class CourseBaseInfoController {
     @PostMapping("/list")
     public PageResult<CourseBase> list(PageParams pageParams, @RequestBody(required = false) QueryCourseParamsDto queryCourseParamsDto){
         return courseBaseInfoService.queryCourseBaseList(pageParams, queryCourseParamsDto);
+    }
+
+    @ApiOperation("课程添加接口")
+    @PostMapping
+    public CourseBaseInfoDto createCourseBase(@RequestBody AddCourseDto addCourseDto){
+        Long companyId = 1232141425L;
+        return courseBaseInfoService.createCourseBase(addCourseDto, companyId);
     }
 }
