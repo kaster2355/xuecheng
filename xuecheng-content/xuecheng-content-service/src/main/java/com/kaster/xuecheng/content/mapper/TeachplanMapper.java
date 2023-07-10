@@ -1,7 +1,10 @@
 package com.kaster.xuecheng.content.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.kaster.xuecheng.content.model.dto.TeachplanDto;
 import com.kaster.xuecheng.content.model.po.Teachplan;
+
+import java.util.List;
 
 /**
  * <p>
@@ -12,4 +15,5 @@ import com.kaster.xuecheng.content.model.po.Teachplan;
  */
 public interface TeachplanMapper extends BaseMapper<Teachplan> {
 
+    List<TeachplanDto> getTreeNodes(Long courseId);
 }
