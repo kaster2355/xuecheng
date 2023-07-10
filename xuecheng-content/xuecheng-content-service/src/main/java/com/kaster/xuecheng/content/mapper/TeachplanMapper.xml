@@ -35,7 +35,7 @@
         <result column="one_courseId"   property="courseId" />
         <result column="one_coursePubId"   property="coursePubId" />
         <!-- 一级中包含多个二级数据 -->
-        <collection property="teachplanTreeNodes" ofType="com.kaster.xuecheng.content.model.dto.TeachplanDto" javaType="list">
+        <collection property="teachPlanTreeNodes" ofType="com.kaster.xuecheng.content.model.dto.TeachplanDto" javaType="list">
             <!-- 二级数据映射 -->
             <id     column="two_id"        property="id" />
             <result column="two_pname"      property="pname" />

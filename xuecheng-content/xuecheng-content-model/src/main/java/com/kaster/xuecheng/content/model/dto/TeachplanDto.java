@@ -15,5 +15,5 @@ public class TeachplanDto extends Teachplan {
 
     TeachplanMedia teachplanMedia;
 
-    List<TeachplanDto> teachplanTreeNodes;
+    List<TeachplanDto> teachPlanTreeNodes;
 }
