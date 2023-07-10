@@ -10,6 +10,7 @@ import com.kaster.xuecheng.content.mapper.CourseCategoryMapper;
 import com.kaster.xuecheng.content.mapper.CourseMarketMapper;
 import com.kaster.xuecheng.content.model.dto.AddCourseDto;
 import com.kaster.xuecheng.content.model.dto.CourseBaseInfoDto;
+import com.kaster.xuecheng.content.model.dto.EditCourseDto;
 import com.kaster.xuecheng.content.model.dto.QueryCourseParamsDto;
 import com.kaster.xuecheng.content.model.po.CourseBase;
 import com.kaster.xuecheng.content.model.po.CourseCategory;
@@ -18,6 +19,7 @@ import com.kaster.xuecheng.content.service.CourseBaseInfoService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -146,8 +148,10 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
             return courseMarketMapper.updateById(courseMarketObj);
         }
     }
+
+    @Override
     //根据课程id查询课程基本信息，包括基本信息和营销信息
-    public CourseBaseInfoDto getCourseBaseInfo(long courseId){
+    public CourseBaseInfoDto getCourseBaseInfo(Long courseId){
 
         CourseBase courseBase = courseBaseMapper.selectById(courseId);
         if(courseBase == null){
@@ -170,4 +174,36 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
 
     }
 
+    @Override
+    @Transactional
+    public CourseBaseInfoDto updateCourseBase(EditCourseDto editCourseDto, Long companyId) {
+
+        CourseBase courseBase = this.getCourseBaseInfo(editCourseDto.getId());
+
+        if (courseBase == null){
+            throw new XuechengException("课程不存在");
+        }
+        if (!courseBase.getCompanyId().equals(companyId)){
+            throw new XuechengException("不能修改非本机构课程");
+        }
+
+        CourseBase newCourse = new CourseBase();
+        BeanUtils.copyProperties(editCourseDto, newCourse);
+
+        newCourse.setChangeDate(LocalDateTime.now());
+
+        int i = courseBaseMapper.updateById(newCourse);
+        if (i <= 0){
+            throw new XuechengException("修改失败");
+        }
+
+        CourseMarket newMarket = new CourseMarket();
+        BeanUtils.copyProperties(editCourseDto, newMarket);
+        int j = courseMarketMapper.updateById(newMarket);
+        if (j <= 0) {
+            throw new XuechengException("课程营销信息更新失败");
+        }
+
+        return this.getCourseBaseInfo(editCourseDto.getId());
+    }
 }
