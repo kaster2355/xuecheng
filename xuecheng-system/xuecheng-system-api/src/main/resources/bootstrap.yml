@@ -1,7 +1,7 @@
-server:
-  servlet:
-    context-path: /system
-  port: 63110
+#server:
+#  servlet:
+#    context-path: /system
+#  port: 63110
 #微服务配置
 spring:
   application:
@@ -12,12 +12,20 @@ spring:
       discovery:
         namespace: dev
         group: xuecheng-project
+      config:
+        namespace: dev
+        group: xuecheng-project
+        file-extension: yaml
+        refresh-enabled: true
 
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/xc_system?serverTimezone=UTC&userUnicode=true&useSSL=false&
-    username: root
-    password: 111111
+#  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://127.0.0.1:3306/xc_system?serverTimezone=UTC&userUnicode=true&useSSL=false&
+#    username: root
+#    password: 111111
+
+  profiles:
+    active: dev
 
 
 # 日志文件配置路径
