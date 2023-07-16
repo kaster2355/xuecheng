@@ -9,4 +9,7 @@ public interface MediaFileProcessService {
 
     // 开始任务
     boolean startTask(long id);
+
+    // 保存任务状态
+    void saveProcessFinishStatus(Long taskId,String status,String fileId,String url,String errorMsg);
 }
