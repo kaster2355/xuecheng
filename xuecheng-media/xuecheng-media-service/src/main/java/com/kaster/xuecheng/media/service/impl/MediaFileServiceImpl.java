@@ -353,6 +353,7 @@ public class MediaFileServiceImpl implements MediaFileService {
         return RestResponse.success(true);
     }
 
+    @Override
     public File downloadFileFromMinIO(String bucket, String objectName) {
         //临时文件
         File minioFile = null;

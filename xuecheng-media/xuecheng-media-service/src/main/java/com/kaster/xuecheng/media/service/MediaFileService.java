@@ -8,6 +8,8 @@ import com.kaster.xuecheng.media.model.dto.UploadFileParamsDto;
 import com.kaster.xuecheng.media.model.dto.UploadFileResultDto;
 import com.kaster.xuecheng.media.model.po.MediaFiles;
 
+import java.io.File;
+
 public interface MediaFileService {
 
     /**
@@ -56,4 +58,8 @@ public interface MediaFileService {
      * @return
      */
     public RestResponse<Boolean> mergechunks(Long companyId, String fileMd5, int chunkTotal, UploadFileParamsDto uploadFileParamsDto);
+
+    File downloadFileFromMinIO(String bucket, String objectName);
+
+    boolean addMediaFilesToMinIO(String localFilePath, String mimeType, String bucket, String objectName);
 }
