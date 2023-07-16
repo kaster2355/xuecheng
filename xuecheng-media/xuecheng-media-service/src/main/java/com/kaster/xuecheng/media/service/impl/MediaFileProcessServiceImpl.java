@@ -17,7 +17,8 @@ public class MediaFileProcessServiceImpl implements MediaFileProcessService {
     private MediaProcessMapper mediaProcessMapper;
 
     /**
-     * 待转换格式媒资查询
+     * 待转换格式媒资任务查询
+     *
      * @param shardIndex
      * @param shardTotal
      * @param count
@@ -26,5 +27,10 @@ public class MediaFileProcessServiceImpl implements MediaFileProcessService {
     @Override
     public List<MediaProcess> getMediaProcessList(int shardIndex, int shardTotal, int count) {
         return mediaProcessMapper.selectListByShardIndex(shardTotal, shardIndex, count);
+    }
+
+    @Override
+    public boolean startTask(long id) {
+        return mediaProcessMapper.startTask(id) > 0;
     }
 }
