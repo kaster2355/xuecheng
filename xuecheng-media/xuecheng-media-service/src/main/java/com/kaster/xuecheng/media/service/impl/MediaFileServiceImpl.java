@@ -6,8 +6,10 @@ import com.j256.simplemagic.ContentInfo;
 import com.j256.simplemagic.ContentInfoUtil;
 import com.kaster.xuecheng.base.exception.XuechengException;
 import com.kaster.xuecheng.base.model.RestResponse;
+import com.kaster.xuecheng.media.mapper.MediaProcessMapper;
 import com.kaster.xuecheng.media.model.dto.UploadFileParamsDto;
 import com.kaster.xuecheng.media.model.dto.UploadFileResultDto;
+import com.kaster.xuecheng.media.model.po.MediaProcess;
 import com.kaster.xuecheng.media.service.MediaFileService;
 import com.kaster.xuecheng.base.model.PageParams;
 import com.kaster.xuecheng.base.model.PageResult;
@@ -24,6 +26,7 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,6 +53,9 @@ public class MediaFileServiceImpl implements MediaFileService {
 
     @Autowired
     MediaFilesMapper mediaFilesMapper;
+
+    @Autowired
+    MediaProcessMapper mediaProcessMapper;
 
     @Autowired
     private MinioClient minioClient;
@@ -153,9 +159,30 @@ public class MediaFileServiceImpl implements MediaFileService {
                 log.debug("保存文件信息到数据库成功,{}", mediaFiles.toString());
                 return null;
             }
+            // 记录待处理任务
+            addWaitingTask(mediaFiles);
+
             return mediaFiles;
         }
         return mediaFiles;
+    }
+
+    /**
+     * 添加待处理任务
+     * @param mediaFiles 媒资文件信息
+     */
+    private void addWaitingTask(MediaFiles mediaFiles){
+        String filename = mediaFiles.getFilename();
+        String mimeType = getMimeType(filename.substring(filename.lastIndexOf(".")));
+        if ("video/x-msvideo".equals(mimeType)){
+            MediaProcess mediaProcess = new MediaProcess();
+            BeanUtils.copyProperties(mediaFiles, mediaProcess);
+            mediaProcess.setStatus("1");
+            mediaProcess.setCreateDate(LocalDateTime.now());
+            mediaProcess.setFailCount(0);
+
+            mediaProcessMapper.insert(mediaProcess);
+        }
     }
 
 
