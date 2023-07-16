@@ -180,6 +180,7 @@ public class MediaFileServiceImpl implements MediaFileService {
             mediaProcess.setStatus("1");
             mediaProcess.setCreateDate(LocalDateTime.now());
             mediaProcess.setFailCount(0);
+            mediaProcess.setUrl(null);
 
             mediaProcessMapper.insert(mediaProcess);
         }
