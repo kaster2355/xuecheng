@@ -87,6 +87,7 @@ public class TeachplanServiceImpl implements TeachplanService {
         BeanUtils.copyProperties(bindTeachplanMediaDto, teachplanMedia);
         teachplanMedia.setCourseId(teachplan.getCourseId());
         teachplanMedia.setCreateDate(LocalDateTime.now());
+        teachplanMedia.setMediaFilename(bindTeachplanMediaDto.getFileName());
         teachplanMediaMapper.insert(teachplanMedia);
         return teachplanMedia;
     }
