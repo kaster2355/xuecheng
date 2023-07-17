@@ -93,14 +93,15 @@ public class VideoTask {
                     }
 
                     // 上传
-                    boolean b1 = mediaFileService.addMediaFilesToMinIO(tempFile.getAbsolutePath(), "video/mp4", bucket, objectName);
+                    String mp4FilePath = getFilePath(mediaProcess.getFileId(), ".mp4");
+                    boolean b1 = mediaFileService.addMediaFilesToMinIO(tempFile.getAbsolutePath(), "video/mp4", bucket, mp4FilePath);
                     if (!b1) {
                         log.debug("上传mp4到minio失败,taskId:{}", taskId);
                         mediaFileProcessService.saveProcessFinishStatus(mediaProcess.getId(), "3", mediaProcess.getFileId(), null, "上传mp4到minio失败");
                     }
 
                     // 保存结果
-                    mediaFileProcessService.saveProcessFinishStatus(mediaProcess.getId(), "2", mediaProcess.getFileId(), getFilePath(mediaProcess.getFileId(), ".mp4"), null);
+                    mediaFileProcessService.saveProcessFinishStatus(mediaProcess.getId(), "2", mediaProcess.getFileId(), mp4FilePath, null);
 
                 } finally {
                     countDownLatch.countDown();
