@@ -42,6 +42,7 @@ public class CoursePublishServiceImpl implements CoursePublishService {
 
     /**
      * 获取课程预览信息
+     *
      * @param courseId
      * @return
      */
@@ -61,6 +62,7 @@ public class CoursePublishServiceImpl implements CoursePublishService {
 
     /**
      * 提交审核
+     *
      * @param companyId
      * @param courseId
      */
@@ -69,30 +71,34 @@ public class CoursePublishServiceImpl implements CoursePublishService {
 
         CourseBaseInfoDto courseBaseInfo = courseBaseInfoService.getCourseBaseInfo(courseId);
 
-        if (courseBaseInfo == null){
+        if (courseBaseInfo == null) {
             XuechengException.cast("课程不存在");
         }
 
         // 审核状态为已提交不得提交
         String auditStatus = courseBaseInfo.getAuditStatus();
-        if ("202003".equals(auditStatus)){
+        if ("202003".equals(auditStatus)) {
             XuechengException.cast("课程已提交，请等待审核");
+        }
+        if (!companyId.equals(courseBaseInfo.getCompanyId())) {
+            XuechengException.cast("只能提交本机构的课程");
         }
 
         // 未完善课程图片 计划信息不允许提交
         String pic = courseBaseInfo.getPic();
-        if (StringUtils.isEmpty(pic)){
+        if (StringUtils.isEmpty(pic)) {
             XuechengException.cast("请上传课程图片");
         }
 
         List<TeachplanDto> teachplanDtos = teachplanService.findTeachplanTree(courseId);
-        if (teachplanDtos == null || teachplanDtos.size() == 0){
+        if (teachplanDtos == null || teachplanDtos.size() == 0) {
             XuechengException.cast("请编写课程计划");
         }
 
         // 查询到基本信息 营销信息 课程计划插入到课程预发布表
         CoursePublishPre coursePublishPre = new CoursePublishPre();
         BeanUtils.copyProperties(courseBaseInfo, coursePublishPre);
+        coursePublishPre.setCompanyId(companyId);
 
         CourseMarket courseMarket = courseMarketMapper.selectById(courseId);
 
@@ -106,7 +112,7 @@ public class CoursePublishServiceImpl implements CoursePublishService {
 
         // 更新或创建
         CoursePublishPre coursePublishPre1 = coursePublishPreMapper.selectById(courseId);
-        if (coursePublishPre1 == null){
+        if (coursePublishPre1 == null) {
             coursePublishPreMapper.insert(coursePublishPre);
         } else {
             coursePublishPreMapper.updateById(coursePublishPre);
