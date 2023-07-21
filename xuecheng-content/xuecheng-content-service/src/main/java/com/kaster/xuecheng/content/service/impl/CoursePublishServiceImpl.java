@@ -1,23 +1,29 @@
 package com.kaster.xuecheng.content.service.impl;
 
 import com.alibaba.fastjson.JSON;
+import com.kaster.xuecheng.base.exception.CommonError;
 import com.kaster.xuecheng.base.exception.XuechengException;
 import com.kaster.xuecheng.content.mapper.CourseBaseMapper;
 import com.kaster.xuecheng.content.mapper.CourseMarketMapper;
+import com.kaster.xuecheng.content.mapper.CoursePublishMapper;
 import com.kaster.xuecheng.content.mapper.CoursePublishPreMapper;
 import com.kaster.xuecheng.content.model.dto.CourseBaseInfoDto;
 import com.kaster.xuecheng.content.model.dto.CoursePreviewDto;
 import com.kaster.xuecheng.content.model.dto.TeachplanDto;
 import com.kaster.xuecheng.content.model.po.CourseBase;
 import com.kaster.xuecheng.content.model.po.CourseMarket;
+import com.kaster.xuecheng.content.model.po.CoursePublish;
 import com.kaster.xuecheng.content.model.po.CoursePublishPre;
 import com.kaster.xuecheng.content.service.CourseBaseInfoService;
 import com.kaster.xuecheng.content.service.CoursePublishService;
 import com.kaster.xuecheng.content.service.TeachplanService;
+import com.kaster.xuecheng.messagesdk.model.po.MqMessage;
+import com.kaster.xuecheng.messagesdk.service.MqMessageService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,6 +45,12 @@ public class CoursePublishServiceImpl implements CoursePublishService {
 
     @Autowired
     private CourseBaseMapper courseBaseMapper;
+
+    @Autowired
+    private CoursePublishMapper coursePublishMapper;
+
+    @Autowired
+    MqMessageService mqMessageService;
 
     /**
      * 获取课程预览信息
@@ -122,6 +134,55 @@ public class CoursePublishServiceImpl implements CoursePublishService {
         CourseBase courseBase = courseBaseMapper.selectById(courseId);
         courseBase.setAuditStatus("202003");
         courseBaseMapper.updateById(courseBase);
+
+    }
+
+    /**
+     * 课程发布
+     *
+     * @param companyId
+     * @param courseId
+     */
+    @Override
+    @Transactional
+    public void coursePublish(Long companyId, Long courseId) {
+        // 查询预发布表
+        CoursePublishPre coursePublishPre = coursePublishPreMapper.selectById(courseId);
+
+        if (coursePublishPre == null) {
+            XuechengException.cast("课程未提交审核");
+        }
+
+        if (!companyId.equals(coursePublishPre.getCompanyId())) {
+            XuechengException.cast("只能发布本公司课程");
+        }
+
+        if (!"202004".equals(coursePublishPre.getStatus())) {
+            XuechengException.cast("课程未通过审核");
+        }
+
+        // 将预发布表转移到发布表
+        CoursePublish coursePublish = new CoursePublish();
+        BeanUtils.copyProperties(coursePublishPre, coursePublish);
+
+        CoursePublish coursePublish1 = coursePublishMapper.selectById(courseId);
+        if (coursePublish1 == null)
+            coursePublishMapper.insert(coursePublish);
+        else
+            coursePublishMapper.updateById(coursePublish);
+
+        // 写入消息表
+        saveCoursePublishMessage(courseId);
+
+        // 删除预发布表
+        coursePublishPreMapper.deleteById(courseId);
+    }
+
+    private void saveCoursePublishMessage(Long courseId) {
+        MqMessage mqMessage = mqMessageService.addMessage("course_publish", String.valueOf(courseId), null, null);
+        if (mqMessage == null) {
+            XuechengException.cast(CommonError.UNKOWN_ERROR);
+        }
 
     }
 }

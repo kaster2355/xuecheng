@@ -7,4 +7,6 @@ public interface CoursePublishService {
     CoursePreviewDto getCoursePreviewInfo(Long courseId);
 
     void commitAudit(Long companyId,Long courseId);
+
+    void coursePublish(Long companyId, Long courseId);
 }
