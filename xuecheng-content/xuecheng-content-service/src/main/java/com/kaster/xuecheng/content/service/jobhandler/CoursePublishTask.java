@@ -1,5 +1,6 @@
 package com.kaster.xuecheng.content.service.jobhandler;
 
+import com.kaster.xuecheng.base.exception.XuechengException;
 import com.kaster.xuecheng.content.service.CoursePublishService;
 import com.kaster.xuecheng.messagesdk.model.po.MqMessage;
 import com.kaster.xuecheng.messagesdk.service.MessageProcessAbstract;
@@ -58,9 +59,10 @@ public class CoursePublishTask extends MessageProcessAbstract {
 
         File file = coursePublishService.generateCourseHtml(courseId);
 
-        if (file != null){
-            coursePublishService.uploadCourseHtml(courseId, file);
+        if (file == null){
+            XuechengException.cast("生成静态页面为空");
         }
+        coursePublishService.uploadCourseHtml(courseId, file);
 
         mqMessageService.completedStageOne(taskId);
     }
