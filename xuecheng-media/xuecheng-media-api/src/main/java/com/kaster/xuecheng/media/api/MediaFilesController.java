@@ -42,7 +42,8 @@ public class MediaFilesController {
 
     @ApiOperation("上传图片")
     @PostMapping(value = "/upload/coursefile", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public UploadFileResultDto upload(@RequestPart("filedata") MultipartFile file) {
+    public UploadFileResultDto upload(@RequestPart("filedata") MultipartFile file,
+                                      @RequestParam(value = "objectName", required = false) String objectName) {
 
         UploadFileParamsDto uploadFileParamsDto = new UploadFileParamsDto();
         Long companyId = 1232141425L;
@@ -61,6 +62,6 @@ public class MediaFilesController {
         }
 
 
-        return mediaFileService.uploadFile(companyId, uploadFileParamsDto, tempFile.getAbsolutePath());
+        return mediaFileService.uploadFile(companyId, uploadFileParamsDto, tempFile.getAbsolutePath(), objectName);
     }
 }

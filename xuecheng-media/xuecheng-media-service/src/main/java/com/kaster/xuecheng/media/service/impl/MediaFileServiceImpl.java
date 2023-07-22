@@ -23,6 +23,7 @@ import io.minio.messages.DeleteObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -190,7 +191,7 @@ public class MediaFileServiceImpl implements MediaFileService {
 
 
     @Override
-    public UploadFileResultDto uploadFile(Long companyId, UploadFileParamsDto uploadFileParamsDto, String filePath) {
+    public UploadFileResultDto uploadFile(Long companyId, UploadFileParamsDto uploadFileParamsDto, String filePath, String objectName) {
 
         File file = new File(filePath);
 
@@ -207,7 +208,9 @@ public class MediaFileServiceImpl implements MediaFileService {
 
         String defaultFolderPath = getDefaultFolderPath();
 
-        String objectName = defaultFolderPath + fileMd5 + extension;
+        if (StringUtils.isEmpty(objectName)){
+            objectName = defaultFolderPath + fileMd5 + extension;
+        }
 
         boolean b = addMediaFilesToMinIO(filePath, mimeType, bucket_Files, objectName);
 

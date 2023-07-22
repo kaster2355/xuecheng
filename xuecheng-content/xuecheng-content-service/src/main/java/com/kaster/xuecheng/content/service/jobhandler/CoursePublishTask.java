@@ -1,14 +1,21 @@
 package com.kaster.xuecheng.content.service.jobhandler;
 
+import com.kaster.xuecheng.content.service.CoursePublishService;
 import com.kaster.xuecheng.messagesdk.model.po.MqMessage;
 import com.kaster.xuecheng.messagesdk.service.MessageProcessAbstract;
 import com.kaster.xuecheng.messagesdk.service.MqMessageService;
 import com.xxl.job.core.context.XxlJobHelper;
 import com.xxl.job.core.handler.annotation.XxlJob;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.File;
 
 @Component
 public class CoursePublishTask extends MessageProcessAbstract {
+
+    @Autowired
+    private CoursePublishService coursePublishService;
 
     @XxlJob("coursePublishJobHandler")
     public void coursePublishJobHandler() throws Exception {
@@ -49,6 +56,11 @@ public class CoursePublishTask extends MessageProcessAbstract {
             return;
         }
 
+        File file = coursePublishService.generateCourseHtml(courseId);
+
+        if (file != null){
+            coursePublishService.uploadCourseHtml(courseId, file);
+        }
 
         mqMessageService.completedStageOne(taskId);
     }
