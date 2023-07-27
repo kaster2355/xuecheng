@@ -4,8 +4,11 @@ import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.kaster.xuecheng.ucenter.mapper.XcUserMapper;
 import com.kaster.xuecheng.ucenter.model.dto.AuthParamsDto;
+import com.kaster.xuecheng.ucenter.model.dto.XcUserExt;
 import com.kaster.xuecheng.ucenter.model.po.XcUser;
+import com.kaster.xuecheng.ucenter.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,6 +21,10 @@ public class UserServiceImpl implements UserDetailsService {
     @Autowired
     private XcUserMapper xcUserMapper;
 
+    @Autowired
+    ApplicationContext applicationContext;
+
+
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
 
@@ -29,22 +36,24 @@ public class UserServiceImpl implements UserDetailsService {
         } catch (Exception e) {
             throw new RuntimeException("认证请求参数不符合规定");
         }
-        String username = authParamsDto.getUsername();
-        // 用s查询数据库
-        XcUser xcUser = xcUserMapper.selectOne(new LambdaQueryWrapper<XcUser>().eq(XcUser::getUsername, username));
 
-        // 不存在返回null
-        if (xcUser == null) {
-            return null;
-        }
+        String authType = authParamsDto.getAuthType();
+        AuthService authService = applicationContext.getBean(authType + "_authservice", AuthService.class);
+        XcUserExt userExt = authService.execute(authParamsDto);
 
-        // 存在拿到正确密码封装给框架比对
-        String[] authorities = {"test"};
-        String password = xcUser.getPassword();
-        xcUser.setPassword(null);
-
-        String jsonString = JSON.toJSONString(xcUser);
-        return User.withUsername(jsonString).authorities(authorities).password(password).build();
-
+        return getUserPrincipal(userExt);
     }
+
+    public UserDetails getUserPrincipal(XcUserExt user) {
+        //用户权限,如果不加报Cannot pass a null GrantedAuthority collection
+        String[] authorities = {"p1"};
+        String password = user.getPassword();
+        //为了安全在令牌中不放密码
+        user.setPassword(null);
+        //将user对象转json
+        String userString = JSON.toJSONString(user);
+        //创建UserDetails对象
+        return User.withUsername(userString).password(password).authorities(authorities).build();
+    }
+
 }
