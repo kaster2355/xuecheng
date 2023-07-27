@@ -6,3 +6,7 @@ POST {{auth_host}}/auth/oauth/token?client_id=XcWebApp&client_secret=XcWebApp&gr
 
 ###校验jwt令牌
 POST {{auth_host}}/auth/oauth/check_token?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsieHVlY2hlbmciXSwidXNlcl9uYW1lIjoie1wiY29tcGFueUlkXCI6XCIxMjMyMTQxNDI1XCIsXCJjcmVhdGVUaW1lXCI6XCIyMDIyLTA5LTI4VDA4OjMyOjAzXCIsXCJpZFwiOlwiNTJcIixcIm5hbWVcIjpcIk3ogIHluIhcIixcInNleFwiOlwiMVwiLFwic3RhdHVzXCI6XCJcIixcInVzZXJuYW1lXCI6XCJ0MVwiLFwidXR5cGVcIjpcIjEwMTAwMlwifSIsInNjb3BlIjpbImFsbCJdLCJleHAiOjE2OTA0ODU1MzMsImF1dGhvcml0aWVzIjpbInRlc3QiXSwianRpIjoiOTQ4OGM0NWUtNTdmMi00OGY2LTgwMWQtOGJiMWU4M2M0ODcxIiwiY2xpZW50X2lkIjoiWGNXZWJBcHAifQ.ctJh5Q-mztUmixp7NUtbkllndwcDqDV2CjJgXB-iEGU
+
+################扩展认证请求参数后######################
+###密码模式
+POST {{auth_host}}/auth/oauth/token?client_id=XcWebApp&client_secret=XcWebApp&grant_type=password&username={"username":"stu1","authType":"password","password":"111111"}
