@@ -8,6 +8,7 @@ import com.kaster.xuecheng.content.model.po.CourseBase;
 import com.kaster.xuecheng.base.model.PageParams;
 import com.kaster.xuecheng.base.model.PageResult;
 import com.kaster.xuecheng.content.service.CourseBaseInfoService;
+import com.kaster.xuecheng.content.util.SecurityUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,12 @@ public class CourseBaseInfoController {
     @ApiOperation("课程分页查询接口")
     @PostMapping("/list")
     public PageResult<CourseBase> list(PageParams pageParams, @RequestBody(required = false) QueryCourseParamsDto queryCourseParamsDto){
+
+        SecurityUtil.XcUser user = SecurityUtil.getUser();
+        if (user != null){
+            String companyId = user.getCompanyId();
+        }
+
         return courseBaseInfoService.queryCourseBaseList(pageParams, queryCourseParamsDto);
     }
 
