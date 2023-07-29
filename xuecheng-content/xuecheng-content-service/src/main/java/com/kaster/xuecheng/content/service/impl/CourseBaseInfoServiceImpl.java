@@ -52,6 +52,7 @@ public class CourseBaseInfoServiceImpl implements CourseBaseInfoService {
         queryWrapper.like(StringUtils.isNotEmpty(dto.getCourseName()),CourseBase::getName,dto.getCourseName());
         queryWrapper.eq(StringUtils.isNotEmpty(dto.getAuditStatus()),CourseBase::getAuditStatus,dto.getAuditStatus());
         queryWrapper.eq(StringUtils.isNotEmpty(dto.getPublishStatus()), CourseBase::getStatus, dto.getPublishStatus());
+        queryWrapper.eq(CourseBase::getCompanyId, dto.getCompanyId());
 
         Page<CourseBase> page = new Page<>(pageParams.getPageNo(), pageParams.getPageSize());
 

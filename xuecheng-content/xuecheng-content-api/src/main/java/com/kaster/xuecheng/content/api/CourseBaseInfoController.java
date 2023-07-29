@@ -11,6 +11,7 @@ import com.kaster.xuecheng.content.service.CourseBaseInfoService;
 import com.kaster.xuecheng.content.util.SecurityUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.logging.log4j.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -29,11 +30,14 @@ public class CourseBaseInfoController {
     @ApiOperation("课程分页查询接口")
     @PreAuthorize("hasAuthority('xc_teachmanager_course_list')")
     @PostMapping("/list")
-    public PageResult<CourseBase> list(PageParams pageParams, @RequestBody(required = false) QueryCourseParamsDto queryCourseParamsDto){
+    public PageResult<CourseBase> list(PageParams pageParams, @RequestBody(required = false) QueryCourseParamsDto queryCourseParamsDto) {
 
         SecurityUtil.XcUser user = SecurityUtil.getUser();
-        if (user != null){
+        if (user != null) {
             String companyId = user.getCompanyId();
+            if (Strings.isNotEmpty(companyId)) {
+                queryCourseParamsDto.setCompanyId(Long.parseLong(companyId));
+            }
         }
 
         return courseBaseInfoService.queryCourseBaseList(pageParams, queryCourseParamsDto);
@@ -41,21 +45,21 @@ public class CourseBaseInfoController {
 
     @ApiOperation("课程添加接口")
     @PostMapping
-    public CourseBaseInfoDto createCourseBase(@RequestBody @Validated AddCourseDto addCourseDto){
+    public CourseBaseInfoDto createCourseBase(@RequestBody @Validated AddCourseDto addCourseDto) {
         Long companyId = 1232141425L;
         return courseBaseInfoService.createCourseBase(addCourseDto, companyId);
     }
 
     @ApiOperation("课程查询接口")
     @GetMapping("/{courseId}")
-    public CourseBaseInfoDto getCourseBaseInfo(@PathVariable Long courseId){
+    public CourseBaseInfoDto getCourseBaseInfo(@PathVariable Long courseId) {
         return courseBaseInfoService.getCourseBaseInfo(courseId);
     }
 
     @ApiOperation("修改课程接口")
     @PutMapping
-    public CourseBaseInfoDto updateCourseBaseInfo(@RequestBody EditCourseDto editCourseDto){
+    public CourseBaseInfoDto updateCourseBaseInfo(@RequestBody EditCourseDto editCourseDto) {
         Long companyId = 1232141425L;
-        return courseBaseInfoService.updateCourseBase( editCourseDto, companyId);
+        return courseBaseInfoService.updateCourseBase(editCourseDto, companyId);
     }
 }

@@ -13,4 +13,6 @@ public class QueryCourseParamsDto {
 
     // 发布状态
     private String publishStatus;
+
+    private Long companyId = 0L;
 }
