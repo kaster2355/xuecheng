@@ -1,6 +1,7 @@
 package com.kaster.xuecheng.content.service;
 
 import com.kaster.xuecheng.content.model.dto.CoursePreviewDto;
+import com.kaster.xuecheng.content.model.po.CoursePublish;
 
 import java.io.File;
 
@@ -16,4 +17,5 @@ public interface CoursePublishService {
 
     void  uploadCourseHtml(Long courseId,File file);
 
+    CoursePublish getCoursePublish(Long courseId);
 }
