@@ -5,12 +5,12 @@ spring:
     name: learning-service
   cloud:
     nacos:
-      server-addr: 192.168.101.65:8848
+      server-addr: 81.70.189.44:8848
       discovery:
-        namespace: dev166
-        group: xuecheng-plus-project
+        namespace: dev
+        group: xuecheng-project
       config:
-        namespace: dev166
+        namespace: dev
         group: xuecheng-plus-project
         file-extension: yaml
         refresh-enabled: true

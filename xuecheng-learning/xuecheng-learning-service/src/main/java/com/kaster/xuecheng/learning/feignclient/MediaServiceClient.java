@@ -1,6 +1,7 @@
 package com.kaster.xuecheng.learning.feignclient;
 
-import com.xuecheng.base.model.RestResponse;
+
+import com.kaster.xuecheng.base.model.RestResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;

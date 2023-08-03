@@ -1,6 +1,6 @@
-package com.xuecheng.learning;
+package com.kaster.xuecheng.learning;
 
-import com.xuecheng.content.model.po.CoursePublish;
+import com.kaster.xuecheng.content.model.po.CoursePublish;
 import com.kaster.xuecheng.learning.feignclient.ContentServiceClient;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ public class FeignClientTest {
 
     @Test
     public void testContentServiceClient() {
-        CoursePublish coursepublish = contentServiceClient.getCoursepublish(18L);
+        CoursePublish coursepublish = contentServiceClient.getCoursepublish(124L);
         Assertions.assertNotNull(coursepublish);
     }
 }

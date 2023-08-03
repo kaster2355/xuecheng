@@ -1,4 +1,4 @@
-package com.xuecheng.learning;
+package com.kaster.xuecheng.learning;
 
 import com.kaster.xuecheng.learning.mapper.XcChooseCourseMapper;
 import org.junit.jupiter.api.Test;
