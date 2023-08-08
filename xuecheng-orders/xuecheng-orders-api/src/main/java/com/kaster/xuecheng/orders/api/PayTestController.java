@@ -30,7 +30,7 @@ public class PayTestController {
         AlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.URL, APP_ID, APP_PRIVATE_KEY, AlipayConfig.FORMAT, AlipayConfig.CHARSET, ALIPAY_PUBLIC_KEY, AlipayConfig.SIGNTYPE);
         AlipayTradeWapPayRequest alipayRequest = new AlipayTradeWapPayRequest();
         alipayRequest.setBizContent("{" +
-                "    \"out_trade_no\":\"202210100010101002\"," +
+                "    \"out_trade_no\":\"202210100010101003\"," +
                 "    \"total_amount\":0.1," +
                 "    \"subject\":\"Iphone6 16G\"," +
                 "    \"product_code\":\"QUICK_WAP_WAY\"" +
