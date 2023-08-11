@@ -132,4 +132,9 @@ public class OrderServiceImpl implements OrderService {
         payRecordMapper.insert(payRecord);
         return payRecord;
     }
+
+    @Override
+    public XcPayRecord getPayRecordByPayno(String payNo) {
+        return payRecordMapper.selectOne(new LambdaQueryWrapper<XcPayRecord>().eq(XcPayRecord::getPayNo, payNo));
+    }
 }

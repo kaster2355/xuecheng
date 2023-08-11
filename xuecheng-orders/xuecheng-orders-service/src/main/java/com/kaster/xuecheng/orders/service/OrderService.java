@@ -11,4 +11,6 @@ public interface OrderService {
     XcOrders saveXcOrders(String userId, AddOrderDto addOrderDto);
 
     XcPayRecord createPayRecord(XcOrders orders);
+
+    XcPayRecord getPayRecordByPayno(String payNo);
 }
