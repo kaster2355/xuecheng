@@ -90,4 +90,14 @@ public class OrderController {
         httpResponse.getWriter().flush();
         httpResponse.getWriter().close();
     }
+
+    @ApiOperation("查询支付结果")
+    @GetMapping("/payresult")
+    @ResponseBody
+    public PayRecordDto payresult(String payNo) throws IOException {
+
+        //查询支付结果
+
+        return null;
+    }
 }
