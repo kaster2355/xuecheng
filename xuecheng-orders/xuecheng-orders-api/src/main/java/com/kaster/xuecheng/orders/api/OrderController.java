@@ -78,7 +78,7 @@ public class OrderController {
         DefaultAlipayClient alipayClient = new DefaultAlipayClient(AlipayConfig.URL, APP_ID, APP_PRIVATE_KEY, AlipayConfig.FORMAT, AlipayConfig.CHARSET, ALIPAY_PUBLIC_KEY, AlipayConfig.SIGNTYPE);
         AlipayTradeWapPayRequest payRequest = new AlipayTradeWapPayRequest();
 //        payRequest.setReturnUrl("http://domain.com/CallBack/return_url.jsp");
-//        payRequest.setNotifyUrl("http://tjxt-user-t.itheima.net/xuecheng/orders/paynotify");//在公共参数中设置回跳和通知地址
+        payRequest.setNotifyUrl("http://u9c6kk.natappfree.cc/orders/receivenotify");//在公共参数中设置回跳和通知地址
 
         payRequest.setBizContent("{" +
                 " \"out_trade_no\":\"" + payRecord.getPayNo() + "\"," +
