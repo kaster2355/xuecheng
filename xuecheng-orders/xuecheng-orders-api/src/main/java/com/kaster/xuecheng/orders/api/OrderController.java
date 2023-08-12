@@ -2,11 +2,13 @@ package com.kaster.xuecheng.orders.api;
 
 import com.alipay.api.AlipayApiException;
 import com.alipay.api.DefaultAlipayClient;
+import com.alipay.api.internal.util.AlipaySignature;
 import com.alipay.api.request.AlipayTradeWapPayRequest;
 import com.kaster.xuecheng.base.exception.XuechengException;
 import com.kaster.xuecheng.orders.config.AlipayConfig;
 import com.kaster.xuecheng.orders.model.dto.AddOrderDto;
 import com.kaster.xuecheng.orders.model.dto.PayRecordDto;
+import com.kaster.xuecheng.orders.model.dto.PayStatusDto;
 import com.kaster.xuecheng.orders.model.po.XcPayRecord;
 import com.kaster.xuecheng.orders.service.OrderService;
 import com.kaster.xuecheng.orders.util.SecurityUtil;
@@ -21,8 +23,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 @Api(value = "订单支付接口", tags = "订单支付接口")
 @Slf4j
@@ -97,7 +105,50 @@ public class OrderController {
     public PayRecordDto payresult(String payNo) throws IOException {
 
         //查询支付结果
+        return orderService.queryPayResult(payNo);
+    }
 
-        return null;
+    @ApiOperation("接收支付结果通知")
+    @PostMapping("/receivenotify")
+    public void receivenotify(HttpServletRequest request, HttpServletResponse out) throws UnsupportedEncodingException, AlipayApiException {
+        Map<String, String> params = new HashMap<String, String>();
+        Map requestParams = request.getParameterMap();
+
+        for (Iterator iterator = requestParams.keySet().iterator(); iterator.hasNext(); ) {
+            String name = (String) iterator.next();
+            String[] values = (String[]) requestParams.get(name);
+            String valueStr = "";
+            for (int i = 0; i < values.length; i++) {
+                valueStr = (i == values.length - 1) ? valueStr + values[i] : valueStr + values[i] + ",";
+            }
+            params.put(name, valueStr);
+        }
+
+        //验签
+        boolean verifyResult = AlipaySignature.rsaCheckV1(params, ALIPAY_PUBLIC_KEY, AlipayConfig.CHARSET, "RSA2");
+
+        if (verifyResult) {
+            //商户订单号
+            String outTradeNo = new String(request.getParameter("out_trade_no").getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+            //支付宝交易号
+            String tradeNo = new String(request.getParameter("trade_no").getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+            //交易状态
+            String tradeStatus = new String(request.getParameter("trade_status").getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+            //appid
+            String appId = new String(request.getParameter("app_id").getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+            //total_amount
+            String totalAmount = new String(request.getParameter("total_amount").getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
+            //交易成功处理
+            if (tradeStatus.equals("TRADE_SUCCESS")) {
+                PayStatusDto payStatusDto = new PayStatusDto();
+                payStatusDto.setOut_trade_no(outTradeNo);
+                payStatusDto.setTrade_status(tradeStatus);
+                payStatusDto.setApp_id(appId);
+                payStatusDto.setTrade_no(tradeNo);
+                payStatusDto.setTotal_amount(totalAmount);
+
+                orderService.saveAliPayStatus(payStatusDto);
+            }
+        }
     }
 }
