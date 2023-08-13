@@ -1,5 +1,6 @@
 package com.kaster.xuecheng.orders.service;
 
+import com.kaster.xuecheng.messagesdk.model.po.MqMessage;
 import com.kaster.xuecheng.orders.model.dto.AddOrderDto;
 import com.kaster.xuecheng.orders.model.dto.PayRecordDto;
 import com.kaster.xuecheng.orders.model.dto.PayStatusDto;
@@ -18,4 +19,6 @@ public interface OrderService {
     PayRecordDto queryPayResult(String payNo);
 
     void saveAliPayStatus(PayStatusDto payStatusDto);
+
+    void notifyPayResult(MqMessage message);
 }
