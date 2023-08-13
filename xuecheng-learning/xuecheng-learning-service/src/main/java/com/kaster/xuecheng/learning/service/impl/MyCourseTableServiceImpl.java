@@ -11,6 +11,7 @@ import com.kaster.xuecheng.learning.model.dto.XcCourseTablesDto;
 import com.kaster.xuecheng.learning.model.po.XcChooseCourse;
 import com.kaster.xuecheng.learning.model.po.XcCourseTables;
 import com.kaster.xuecheng.learning.service.MyCourseTablesService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
+@Slf4j
 public class MyCourseTableServiceImpl implements MyCourseTablesService {
 
     @Autowired
@@ -177,5 +179,26 @@ public class MyCourseTableServiceImpl implements MyCourseTablesService {
             xcCourseTablesDto.setLearnStatus("702003");
         }
         return xcCourseTablesDto;
+    }
+
+    @Override
+    public boolean saveChooseCourseStauts(String chooseCourseId) {
+        XcChooseCourse chooseCourse = xcChooseCourseMapper.selectById(chooseCourseId);
+        if (chooseCourse == null){
+            log.debug("接受购买课程的消息，数据库不存在对应记录，选课id：{}", chooseCourseId);
+            return false;
+        }
+
+        String status = chooseCourse.getStatus();
+        if ("701002".equals(status)){
+            chooseCourse.setStatus("701001");
+            int i = xcChooseCourseMapper.updateById(chooseCourse);
+            if (i <= 0){
+                XuechengException.cast("添加选课记录失败");
+            }
+
+            XcCourseTables courseTables = addCourseTables(chooseCourse);
+        }
+        return true;
     }
 }
